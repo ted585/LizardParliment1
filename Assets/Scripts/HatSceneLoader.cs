@@ -1,12 +1,7 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
-/// <summary>
-/// Attach to the tin_foil_hat. When the player selects (grabs/activates) the hat,
-/// they are transported to the Lizard Zone scene.
-/// </summary>
 [RequireComponent(typeof(Collider))]
 [RequireComponent(typeof(XRSimpleInteractable))]
 public class HatSceneLoader : MonoBehaviour
@@ -20,6 +15,13 @@ public class HatSceneLoader : MonoBehaviour
     {
         _interactable = GetComponent<XRSimpleInteractable>();
         _interactable.selectEntered.AddListener(OnHatSelected);
+
+        // Ensure SceneFader exists in the scene
+        if (SceneFader.Instance == null)
+        {
+            var faderGO = new GameObject("SceneFader");
+            faderGO.AddComponent<SceneFader>();
+        }
     }
 
     private void OnDestroy()
@@ -30,7 +32,7 @@ public class HatSceneLoader : MonoBehaviour
 
     private void OnHatSelected(SelectEnterEventArgs args)
     {
-        Debug.Log("[HatSceneLoader] Hat selected — loading scene: " + targetSceneName);
-        SceneManager.LoadScene(targetSceneName);
+        Debug.Log("[HatSceneLoader] Hat selected — fading to scene: " + targetSceneName);
+        SceneFader.Instance.FadeToScene(targetSceneName);
     }
 }
