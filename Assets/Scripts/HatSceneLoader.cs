@@ -10,13 +10,14 @@ public class HatSceneLoader : MonoBehaviour
     public string targetSceneName = "lizard zone";
 
     private XRSimpleInteractable _interactable;
+    private AudioSource _audio;
 
     private void Awake()
     {
         _interactable = GetComponent<XRSimpleInteractable>();
         _interactable.selectEntered.AddListener(OnHatSelected);
+        _audio = GetComponent<AudioSource>();
 
-        // Ensure SceneFader exists in the scene
         if (SceneFader.Instance == null)
         {
             var faderGO = new GameObject("SceneFader");
@@ -32,7 +33,8 @@ public class HatSceneLoader : MonoBehaviour
 
     private void OnHatSelected(SelectEnterEventArgs args)
     {
-        Debug.Log("[HatSceneLoader] Hat selected — fading to scene: " + targetSceneName);
+        if (_audio != null) _audio.Play();
+        Debug.Log("[HatSceneLoader] Hat selected — fading to: " + targetSceneName);
         SceneFader.Instance.FadeToScene(targetSceneName);
     }
 }
